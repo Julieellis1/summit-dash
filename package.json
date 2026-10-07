@@ -1,0 +1,11 @@
+{
+  "name": "summit-dash-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Summit Dash Phase 0 browser prototype (spec v1.2)",
+  "scripts": {
+    "test": "node tests/rules.test.js",
+    "build:preview": "node tools/build-preview.mjs"
+  }
+}
