@@ -1,0 +1,122 @@
+
+§3 Board layout
+  ✓ board has 200 tiles
+  ✓ fate count = 36
+  ✓ supply count = 16
+  ✓ rockslide count = 16
+  ✓ frostbite count = 14
+  ✓ shortcut count = 11
+  ✓ thief count = 11
+  ✓ shrine count = 8
+  ✓ safe count = 81
+  ✓ camp count = 4
+  ✓ fork count = 1
+  ✓ start count = 1
+  ✓ summit count = 1
+  ✓ camps at 40/80/120/160
+  ✓ fork at 65
+  ✓ tiles 2–7 hazard-free
+  ✓ spot-check tiles 8,23,47,101,193,200
+
+Unit rules
+  ✓ start: 5 throws, 1 card, tile 1
+  ✓ Rockslide at 123 never drops below camp 120
+  ✓ Frostbite at 0 throws sets frostbitePending
+  ✓ pending frostbite consumes next gained throw → Pot
+  ✓ Frostbite: next throw consumed with no roll
+  ✓ Supply Crate +1 once per season per tile
+  ✓ hard cap 12
+  ✓ refresh soft cap 8 (6 → 8)
+  ✓ refresh never reduces a bank above 8
+  ✓ passing camp 40 grants +1 and floor 40
+  ✓ re-passing camp gives floor, not bonus
+  ✓ passing 65 triggers Fork once
+  ✓ Safe route: Rockslide 81 treated as Safe
+  ✓ Safe route: outside window unchanged (99 Rockslide)
+  ✓ Risky route: Safe 68 becomes Fate; Rockslide 81 stays
+  ✓ pot threshold max(8, 2×active): 5 players → 10
+  ✓ protected set: 5 players → 1
+  ✓ protected set: 6 players → 2
+  ✓ protected set: 8 players → 2
+  ✓ protected set: 10 players → 3
+  ✓ pot threshold floor 8 when 4 active
+  ✓ Thief's Ledge with nobody ahead is Safe
+  ✓ Thief's Ledge steals 1 from nearest valid ahead + 24h immunity
+  ✓ immune target is skipped
+  ✓ protected player can draw The Last Stand
+  ✓ non-protected player never draws The Last Stand
+  ✓ Boost +6 lands on 8 (Shortcut) without resolving it
+  ✓ SP: 10-player win = 220
+  ✓ SP: 5-player win = 85
+  ✓ deterministic: same seed → identical season state
+
+Invariant fuzz (engine-only full seasons)
+  [spec-comparable: 8 players (5 daily + 3 casual 70%), greedy choices, no player targeting] {"seasons":2500,"firstSummitMedian":8,"p10":7,"p90":9,"medianDailyFinisher":99,"dailySummitedPct":42.2,"casualSummitedPct":10,"eruptionsPerSeason":2.06,"eruptKinds":{"windfall":1297,"sunbreak":2084,"whiteout":1774}}
+  [spec-comparable, measurement mode (no sprint cut-off: everyone climbs to day 12)] {"seasons":2500,"firstSummitMedian":8,"p10":7,"p90":9,"medianDailyFinisher":10,"dailySummitedPct":98.3,"casualSummitedPct":66.5,"eruptionsPerSeason":2.28,"eruptKinds":{"windfall":1414,"sunbreak":2313,"whiteout":1981}}
+  [full prototype: 8 bots greedy/saboteur/cautious mix, targeting on] {"seasons":2500,"firstSummitMedian":8,"p10":7,"p90":9,"medianDailyFinisher":99,"dailySummitedPct":39.9,"casualSummitedPct":10.6,"eruptionsPerSeason":2.13,"eruptKinds":{"whiteout":1898,"windfall":1271,"sunbreak":2153}}
+  (25966728 events checked in 28.9s)
+  ✓ no involuntary move ever went below the Base Camp floor
+  ✓ throws always within 0..12 (integers)
+  ✓ tiles always within 1..200
+  ✓ spec §2: median first summit ≈ day 8 (±1) in spec-comparable config
+  ✓ spec §2: median daily finisher ≈ day 10 (±1) when racing to day 12
+  ✓ every season ends (sprint or day 12)
+
+53 passed, 0 failed
+{
+ "pacing": {
+  "specComparable": {
+   "seasons": 2500,
+   "firstSummitMedian": 8,
+   "p10": 7,
+   "p90": 9,
+   "medianDailyFinisher": 99,
+   "dailySummitedPct": 42.2,
+   "casualSummitedPct": 10,
+   "eruptionsPerSeason": 2.06,
+   "eruptKinds": {
+    "windfall": 1297,
+    "sunbreak": 2084,
+    "whiteout": 1774
+   }
+  },
+  "specComparableNoSprintCutoff": {
+   "seasons": 2500,
+   "firstSummitMedian": 8,
+   "p10": 7,
+   "p90": 9,
+   "medianDailyFinisher": 10,
+   "dailySummitedPct": 98.3,
+   "casualSummitedPct": 66.5,
+   "eruptionsPerSeason": 2.28,
+   "eruptKinds": {
+    "windfall": 1414,
+    "sunbreak": 2313,
+    "whiteout": 1981
+   }
+  },
+  "mixed": {
+   "seasons": 2500,
+   "firstSummitMedian": 8,
+   "p10": 7,
+   "p90": 9,
+   "medianDailyFinisher": 99,
+   "dailySummitedPct": 39.9,
+   "casualSummitedPct": 10.6,
+   "eruptionsPerSeason": 2.13,
+   "eruptKinds": {
+    "whiteout": 1898,
+    "windfall": 1271,
+    "sunbreak": 2153
+   }
+  }
+ },
+ "spec": {
+  "firstSummitMedian": 8,
+  "p10p90": "7–9",
+  "medianDailyFinisher": 10,
+  "dailySummitedBy12": 95,
+  "casualSummitedBy12": 60,
+  "eruptionsPerSeason8p": "~2"
+ }
+}
